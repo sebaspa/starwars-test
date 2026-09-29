@@ -1,8 +1,25 @@
+'use client'
+
+import { useEffect } from 'react'
 import { Descriptions, Modal, Skeleton, Space, Tag } from 'antd'
 import { ModalCharacterDetailProps } from './ModalCharacterDetail.types'
 
+const TITLE_SUFFIX = 'Star Wars Characters'
+
 const ModalCharacterDetail = (props: ModalCharacterDetailProps) => {
   const { isModalOpen, handleClose, loading, error, data } = props
+
+  useEffect(() => {
+    if (!isModalOpen || !data?.name) return
+
+    const characterName = data.name
+    const previousTitle = document.title
+    document.title = `${characterName} | ${TITLE_SUFFIX}`
+
+    return () => {
+      document.title = previousTitle
+    }
+  }, [isModalOpen, data?.name])
 
   return (
     <Modal
