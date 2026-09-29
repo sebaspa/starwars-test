@@ -3,14 +3,31 @@
 import { useMemo, useRef, useState } from 'react'
 import { Button, TableProps } from 'antd'
 import { DataTableType } from '../CharacterTable.types'
-import { useQuery } from '@apollo/client/react'
-import { GET_CHARACTERS } from '@/app/graphql/queries'
+import { useLazyQuery, useQuery } from '@apollo/client/react'
+import {
+  GET_CHARACTERS,
+  GET_CHARACTER_DETAIL
+} from '@/app/graphql/queries'
 import usePagination from '@/app/hooks/usePagination'
 
 const PAGE_SIZE = 10
 
 const useCharacterTable = () => {
-  const [isModalOpen, setIsModalOpen] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(
+    null
+  )
+
+  const [
+    getCharacterDetail,
+    { data: detailData, loading: detailLoading, error: detailError }
+  ] = useLazyQuery(GET_CHARACTER_DETAIL)
+
+  const handleOpenDetail = (id: string) => {
+    setSelectedCharacterId(id)
+    setIsModalOpen(true)
+    getCharacterDetail({ variables: { id } })
+  }
 
   const columns: TableProps<DataTableType>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
@@ -24,9 +41,7 @@ const useCharacterTable = () => {
         <Button
           type='primary'
           size='small'
-          onClick={() => {
-            setIsModalOpen(true)
-          }}
+          onClick={() => handleOpenDetail(record.id)}
         >
           Open detail
         </Button>
@@ -104,6 +119,7 @@ const useCharacterTable = () => {
 
   const handleClose = () => {
     setIsModalOpen(false)
+    setSelectedCharacterId(null)
   }
 
   return {
@@ -115,7 +131,11 @@ const useCharacterTable = () => {
     fetchMore,
     isModalOpen,
     setIsModalOpen,
-    handleClose
+    handleClose,
+    selectedCharacterId,
+    detailData: detailData?.person ?? null,
+    detailLoading,
+    detailError
   }
 }
 

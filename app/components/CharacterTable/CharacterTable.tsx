@@ -14,6 +14,9 @@ const CharacterTable = () => {
     pagination,
     isModalOpen,
     handleClose,
+    detailData,
+    detailLoading,
+    detailError
   } = useCharacterTable()
 
   const dataSource: DataTableType[] = data ?? []
@@ -34,6 +37,9 @@ const CharacterTable = () => {
       <ModalCharacterDetail
         isModalOpen={isModalOpen}
         handleClose={handleClose}
+        loading={detailLoading}
+        error={detailError}
+        data={detailData}
       />
     </Space>
   )
