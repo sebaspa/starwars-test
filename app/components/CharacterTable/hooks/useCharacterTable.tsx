@@ -5,10 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Button, TableProps } from 'antd'
 import { DataTableType } from '../CharacterTable.types'
 import { useLazyQuery, useQuery } from '@apollo/client/react'
-import {
-  GET_CHARACTERS,
-  GET_CHARACTER_DETAIL
-} from '@/app/graphql/queries'
+import { GET_CHARACTERS, GET_CHARACTER_DETAIL } from '@/app/graphql/queries'
 import usePagination from '@/app/hooks/usePagination'
 
 const PAGE_SIZE = 10
@@ -49,8 +46,13 @@ const useCharacterTable = () => {
 
   const columns: TableProps<DataTableType>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
-    { title: 'Gender', dataIndex: 'gender', key: 'gender' },
-    { title: 'Birth Year', dataIndex: 'birthYear', key: 'birthYear' },
+    { title: 'Gender', dataIndex: 'gender', key: 'gender', responsive: ['md'] },
+    {
+      title: 'Birth Year',
+      dataIndex: 'birthYear',
+      key: 'birthYear',
+      responsive: ['md']
+    },
     {
       title: 'Detail',
       key: 'btnDetail',
