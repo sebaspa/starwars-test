@@ -3,9 +3,18 @@
 import { Table, Space } from 'antd'
 import useCharacterTable from './hooks/useCharacterTable'
 import type { DataTableType } from './CharacterTable.types'
+import ModalCharacterDetail from '../ModalCharacterDetail/ModalCharacterDetail'
 
 const CharacterTable = () => {
-  const { columns, data, loading, error, pagination } = useCharacterTable()
+  const {
+    columns,
+    data,
+    loading,
+    error,
+    pagination,
+    isModalOpen,
+    handleClose,
+  } = useCharacterTable()
 
   const dataSource: DataTableType[] = data ?? []
 
@@ -21,6 +30,10 @@ const CharacterTable = () => {
         loading={loading}
         rowKey='id'
         pagination={pagination}
+      />
+      <ModalCharacterDetail
+        isModalOpen={isModalOpen}
+        handleClose={handleClose}
       />
     </Space>
   )

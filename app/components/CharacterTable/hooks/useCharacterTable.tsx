@@ -10,6 +10,8 @@ import usePagination from '@/app/hooks/usePagination'
 const PAGE_SIZE = 10
 
 const useCharacterTable = () => {
+  const [isModalOpen, setIsModalOpen] = useState(true)
+
   const columns: TableProps<DataTableType>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Gender', dataIndex: 'gender', key: 'gender' },
@@ -23,7 +25,7 @@ const useCharacterTable = () => {
           type='primary'
           size='small'
           onClick={() => {
-            console.log('Detail clicked for', record)
+            setIsModalOpen(true)
           }}
         >
           Open detail
@@ -100,13 +102,20 @@ const useCharacterTable = () => {
     }
   })
 
+  const handleClose = () => {
+    setIsModalOpen(false)
+  }
+
   return {
     columns,
     data: displayRows,
     loading,
     error,
     pagination,
-    fetchMore
+    fetchMore,
+    isModalOpen,
+    setIsModalOpen,
+    handleClose
   }
 }
 
