@@ -1,11 +1,12 @@
 'use client'
 
-import { Table } from "antd"
-import useCharacterTable from "./hooks/useCharacterTable"
-import type { DataTableType } from "./CharacterTable.types"
+import { Table, Space } from 'antd'
+import useCharacterTable from './hooks/useCharacterTable'
+import type { DataTableType } from './CharacterTable.types'
 
 const CharacterTable = () => {
-  const { columns, data, loading, error } = useCharacterTable()
+  const { columns, data, loading, error, pagination } = useCharacterTable()
+
   const dataSource: DataTableType[] = data ?? []
 
   if (error) {
@@ -13,12 +14,15 @@ const CharacterTable = () => {
   }
 
   return (
-    <Table<DataTableType>
-      columns={columns}
-      dataSource={dataSource}
-      loading={loading}
-      rowKey="id"
-    />
+    <Space orientation='vertical' size='middle' style={{ width: '100%' }}>
+      <Table<DataTableType>
+        columns={columns}
+        dataSource={dataSource}
+        loading={loading}
+        rowKey='id'
+        pagination={pagination}
+      />
+    </Space>
   )
 }
 
