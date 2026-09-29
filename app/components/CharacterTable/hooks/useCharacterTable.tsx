@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useRef, useState } from 'react'
-import { TableProps } from 'antd'
+import { Button, TableProps } from 'antd'
 import { DataTableType } from '../CharacterTable.types'
 import { useQuery } from '@apollo/client/react'
 import { GET_CHARACTERS } from '@/app/graphql/queries'
@@ -14,7 +14,22 @@ const useCharacterTable = () => {
     { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Gender', dataIndex: 'gender', key: 'gender' },
     { title: 'Birth Year', dataIndex: 'birthYear', key: 'birthYear' },
-    { title: 'Detail', dataIndex: 'btnDetail', key: 'btnDetail' }
+    {
+      title: 'Detail',
+      key: 'btnDetail',
+      width: 110,
+      render: (_, record) => (
+        <Button
+          type='primary'
+          size='small'
+          onClick={() => {
+            console.log('Detail clicked for', record)
+          }}
+        >
+          Open detail
+        </Button>
+      )
+    }
   ]
 
   const { data, loading, error, fetchMore } = useQuery(GET_CHARACTERS, {
