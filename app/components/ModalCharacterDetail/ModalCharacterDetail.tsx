@@ -25,12 +25,7 @@ const ModalCharacterDetail = (props: ModalCharacterDetailProps) => {
 
       {!loading && !error && data && (
         <Space orientation='vertical' size='middle' style={{ width: '100%' }}>
-          <Descriptions
-            title='Attributes'
-            bordered
-            column={2}
-            size='small'
-          >
+          <Descriptions title='Attributes' bordered column={2} size='small'>
             <Descriptions.Item label='Name'>{data.name}</Descriptions.Item>
             <Descriptions.Item label='Gender'>
               {data.gender ?? 'unknown'}
@@ -66,16 +61,17 @@ const ModalCharacterDetail = (props: ModalCharacterDetailProps) => {
             {data.filmConnection.films.length === 0 ? (
               <p>No films available.</p>
             ) : (
-              <Space direction='vertical' size='small' style={{ width: '100%' }}>
+              <Space
+                size='small'
+                style={{ width: '100%' }}
+              >
                 {data.filmConnection.films.map(film => (
                   <div key={film.id}>
                     <strong>{film.title}</strong>
                     {film.director && (
                       <span> — directed by {film.director}</span>
                     )}
-                    {film.releaseDate && (
-                      <span> ({film.releaseDate})</span>
-                    )}
+                    {film.releaseDate && <span> ({film.releaseDate})</span>}
                     <div style={{ marginTop: 4 }}>
                       {film.planetConnection.planets.map(planet => (
                         <Tag key={planet.id} color='blue'>

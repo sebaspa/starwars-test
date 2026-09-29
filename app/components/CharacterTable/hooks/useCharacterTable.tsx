@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button, TableProps } from 'antd'
 import { DataTableType } from '../CharacterTable.types'
 import { useLazyQuery, useQuery } from '@apollo/client/react'
@@ -11,23 +12,40 @@ import {
 import usePagination from '@/app/hooks/usePagination'
 
 const PAGE_SIZE = 10
+const CHARACTER_PARAM = 'character'
 
 const useCharacterTable = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedCharacterId, setSelectedCharacterId] = useState<string | null>(
-    null
-  )
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const characterIdFromUrl = searchParams.get(CHARACTER_PARAM)
+  const isModalOpen = Boolean(characterIdFromUrl)
 
   const [
     getCharacterDetail,
     { data: detailData, loading: detailLoading, error: detailError }
   ] = useLazyQuery(GET_CHARACTER_DETAIL)
 
-  const handleOpenDetail = (id: string) => {
-    setSelectedCharacterId(id)
-    setIsModalOpen(true)
-    getCharacterDetail({ variables: { id } })
-  }
+  useEffect(() => {
+    if (characterIdFromUrl) {
+      getCharacterDetail({ variables: { id: characterIdFromUrl } })
+    }
+  }, [characterIdFromUrl, getCharacterDetail])
+
+  const handleOpenDetail = useCallback(
+    (id: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(CHARACTER_PARAM, id)
+      router.push(`/?${params.toString()}`, { scroll: false })
+    },
+    [router, searchParams]
+  )
+
+  const handleClose = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete(CHARACTER_PARAM)
+    const qs = params.toString()
+    router.push(qs ? `/?${qs}` : '/', { scroll: false })
+  }, [router, searchParams])
 
   const columns: TableProps<DataTableType>['columns'] = [
     { title: 'Name', dataIndex: 'name', key: 'name' },
@@ -117,11 +135,6 @@ const useCharacterTable = () => {
     }
   })
 
-  const handleClose = () => {
-    setIsModalOpen(false)
-    setSelectedCharacterId(null)
-  }
-
   return {
     columns,
     data: displayRows,
@@ -130,9 +143,7 @@ const useCharacterTable = () => {
     pagination,
     fetchMore,
     isModalOpen,
-    setIsModalOpen,
     handleClose,
-    selectedCharacterId,
     detailData: detailData?.person ?? null,
     detailLoading,
     detailError
